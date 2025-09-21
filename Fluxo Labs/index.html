@@ -1,0 +1,712 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Fluxo Labs — Experience Design & Engineering</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+    rel="stylesheet" />
+  <style>
+    /* =========================
+       THEME TOKENS
+    ========================= */
+    :root {
+      --bg: #0b1220;
+      --text: #e5e7eb;
+      --muted: #9aa3b2;
+      --surface: rgba(255, 255, 255, .07);
+      --border: rgba(255, 255, 255, .12);
+      --brand: #7c9cff;
+      /* electric periwinkle */
+      --brand-2: #00e0c7;
+      /* aqua */
+      --accent: #ffb86b;
+      /* warm accent */
+      --shadow-1: 0 10px 30px rgba(0, 0, 0, .35);
+      --shadow-2: 0 20px 60px rgba(0, 0, 0, .45);
+      --radius: 16px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Plus Jakarta Sans", Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+      overflow-x: hidden;
+    }
+
+    /* =========================
+       BACKGROUND ANIMATION (Aurora + Particles)
+    ========================= */
+    .scene {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      overflow: hidden;
+      background: radial-gradient(1200px 600px at 15% 20%, #7c9cff22 0%, transparent 60%),
+        radial-gradient(1000px 500px at 85% 70%, #00e0c722 0%, transparent 60%),
+        radial-gradient(900px 450px at 95% 10%, #ff7ca822 0%, transparent 60%);
+      animation: drift 20s ease-in-out infinite alternate;
+    }
+
+    @keyframes drift {
+      0% {
+        background-position: 0% 50%, 50% 50%, 100% 50%;
+      }
+
+      100% {
+        background-position: 100% 50%, 60% 50%, 0% 50%;
+      }
+    }
+
+    .orbs {
+      position: absolute;
+      inset: 0;
+      filter: blur(40px);
+      opacity: .5;
+      background:
+        radial-gradient(120px 120px at 12% 18%, #7c9cff, transparent 60%),
+        radial-gradient(100px 100px at 78% 26%, #00e0c7, transparent 60%),
+        radial-gradient(140px 140px at 54% 78%, #ffb86b, transparent 60%);
+      mix-blend-mode: screen;
+      animation: float 14s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      50% {
+        transform: translateY(18px);
+      }
+    }
+
+    /* =========================
+       LAYOUT
+    ========================= */
+    .container {
+      width: min(1200px, 92%);
+      margin-inline: auto;
+    }
+
+    /* NAV */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(16px);
+      background: color-mix(in srgb, var(--surface) 100%, transparent);
+      border-bottom: 1px solid var(--border);
+      box-shadow: var(--shadow-1);
+    }
+
+    .nav-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 0;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      font-weight: 800;
+      letter-spacing: .2px;
+    }
+
+    .brand .mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      box-shadow: 0 6px 20px rgba(124, 156, 255, .35);
+    }
+
+    .nav a {
+      color: inherit;
+      text-decoration: none;
+      opacity: .95;
+      border-bottom: 2px solid transparent;
+      padding-bottom: 2px;
+    }
+
+    .nav a:hover {
+      border-bottom-color: var(--brand);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem;
+      font-weight: 700;
+      border-radius: 999px;
+      padding: .75rem 1.1rem;
+      box-shadow: var(--shadow-1);
+      transition: transform .2s;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn.primary {
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      color: #0b1220;
+    }
+
+    .btn.ghost {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      padding: 5.5rem 0 3.5rem;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .eyebrow {
+      color: var(--brand-2);
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      font-size: .8rem;
+    }
+
+    .display {
+      font-size: clamp(2.2rem, 5.4vw, 3.8rem);
+      line-height: 1.08;
+      margin: .35rem 0 .6rem;
+    }
+
+    .lead {
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .dash {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 2px);
+      padding: 1rem;
+      box-shadow: var(--shadow-2);
+      transform: translateZ(0);
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .kpi {
+      background: rgba(255, 255, 255, .06);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .8rem;
+    }
+
+    .kpi span {
+      color: var(--muted);
+      font-size: .82rem;
+    }
+
+    .kpi strong {
+      display: block;
+      font-size: 1.2rem;
+      margin-top: .15rem;
+    }
+
+    .hero-graphic {
+      height: 160px;
+      margin-top: 1rem;
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(124, 156, 255, .35), rgba(0, 0, 0, 0));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .spark {
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(90deg, transparent 0 12px, rgba(255, 255, 255, .06) 12px 13px);
+      transform: translateX(0);
+      animation: scan 9s linear infinite;
+    }
+
+    @keyframes scan {
+      50% {
+        transform: translateX(-40%);
+      }
+    }
+
+    /* SECTION Framing */
+    .section {
+      padding: 4rem 0;
+    }
+
+    .section-head {
+      text-align: center;
+      margin-bottom: 1.2rem;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    /* FEATURE CARDS with tilt */
+    .grid {
+      display: grid;
+      gap: 1.1rem;
+    }
+
+    .grid.three {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      box-shadow: var(--shadow-1);
+      transform-style: preserve-3d;
+      perspective: 900px;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-2);
+    }
+
+    .card h3 {
+      margin: .2rem 0 .4rem;
+      color: var(--brand);
+    }
+
+    .card p {
+      color: var(--muted);
+    }
+
+    .chip {
+      display: inline-block;
+      font-size: .75rem;
+      padding: .25rem .55rem;
+      border-radius: 999px;
+      background: rgba(124, 156, 255, .12);
+      border: 1px solid var(--border);
+      margin-bottom: .4rem;
+    }
+
+    /* LOGO MARQUEE */
+    .marquee {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: rgba(255, 255, 255, .03);
+    }
+
+    .marquee-track {
+      display: flex;
+      gap: 3rem;
+      padding: 1rem 0;
+      animation: marquee 24s linear infinite;
+    }
+
+    @keyframes marquee {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    .logo {
+      opacity: .9;
+      padding: .6rem 1rem;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .04);
+      border: 1px solid var(--border);
+      white-space: nowrap;
+    }
+
+    /* TESTIMONIALS (scroll-snap) */
+    .carousel {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: 1fr;
+    }
+
+    .snap {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: min(88%, 540px);
+      gap: 1rem;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      padding-bottom: .5rem;
+    }
+
+    .snap::-webkit-scrollbar {
+      height: 8px;
+    }
+
+    .snap::-webkit-scrollbar-thumb {
+      background: #1f2937;
+      border-radius: 999px;
+    }
+
+    .quote {
+      scroll-snap-align: start;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      box-shadow: var(--shadow-1);
+    }
+
+    .quote p {
+      font-size: 1rem;
+    }
+
+    .who {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      margin-top: .6rem;
+      color: var(--muted);
+    }
+
+    .avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--brand), var(--brand-2));
+      box-shadow: 0 6px 20px rgba(124, 156, 255, .35);
+    }
+
+    /* CTA */
+    .cta {
+      background: linear-gradient(135deg, rgba(124, 156, 255, .12), rgba(0, 224, 199, .12));
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 6px);
+      box-shadow: var(--shadow-2);
+      padding: 1.2rem;
+      display: grid;
+      gap: .6rem;
+      text-align: center;
+    }
+
+    /* FOOTER */
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 0;
+      border-top: 1px solid var(--border);
+      background: rgba(0, 0, 0, .25);
+    }
+
+    .footer-grid {
+      display: grid;
+      gap: 1rem;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .footer a {
+      color: inherit;
+      text-decoration: none;
+      opacity: .9;
+      display: block;
+      margin: .2rem 0;
+    }
+
+    /* REVEAL ANIMATIONS */
+    .reveal {
+      opacity: 0;
+      transform: translateY(36px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.in {
+      opacity: 1;
+      transform: none;
+    }
+
+    .delay-1 {
+      transition-delay: .12s;
+    }
+
+    .delay-2 {
+      transition-delay: .24s;
+    }
+
+    .delay-3 {
+      transition-delay: .36s;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 980px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .grid.three {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .nav-links {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Animated background layers -->
+  <div class="scene">
+    <div class="orbs"></div>
+  </div>
+
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <div class="container nav-inner">
+      <div class="brand"><span class="mark"></span> Fluxo Labs</div>
+      <div class="nav-links">
+        <a href="#services">Services</a>
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="contact.html" class="btn ghost">Contact</a>
+        <a href="#demo" class="btn primary">Start a Project</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="container hero-grid">
+      <div>
+        <div class="eyebrow reveal">Experience Design • Engineering • AI</div>
+        <h1 class="display reveal delay-1">We build delightful products that scale.</h1>
+        <p class="lead reveal delay-2">From concept to launch, our team designs, prototypes, and ships high‑performance
+          apps and platforms with motion-first craft.</p>
+        <div class="reveal delay-3" style="margin-top:1rem; display:flex; gap:.8rem; flex-wrap:wrap;">
+          <a class="btn primary" href="#services">See services</a>
+          <a class="btn ghost" href="#work">View work</a>
+        </div>
+      </div>
+      <div class="dash tilt reveal delay-2">
+        <div class="kpis">
+          <div class="kpi"><span>Launch time</span><strong>6–10 wks</strong></div>
+          <div class="kpi"><span>Uptime</span><strong>99.98%</strong></div>
+          <div class="kpi"><span>NPS</span><strong>72</strong></div>
+        </div>
+        <div class="hero-graphic">
+          <div class="spark"></div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- LOGO MARQUEE -->
+  <div class="marquee">
+    <div class="container">
+      <div class="marquee-track">
+        <div class="logo">Stripe</div>
+        <div class="logo">Figma</div>
+        <div class="logo">Snowflake</div>
+        <div class="logo">Slack</div>
+        <div class="logo">Tableau</div>
+        <div class="logo">Twilio</div>
+        <!-- repeat to create seamless loop -->
+        <div class="logo">HTML</div>
+        <div class="logo">CSS</div>
+        <div class="logo">JavaScript</div>
+        <div class="logo">TypeScript</div>
+        <div class="logo">Tailwind CSS</div>
+        <div class="logo">C++</div>
+        <!-- More Repeats -->
+        <div class="logo">Stripe</div>
+        <div class="logo">Figma</div>
+        <div class="logo">Snowflake</div>
+        <div class="logo">Slack</div>
+        <div class="logo">Tableau</div>
+        <div class="logo">Twilio</div>
+        <div class="logo">HTML</div>
+        <div class="logo">CSS</div>
+        <div class="logo">JavaScript</div>
+        <div class="logo">TypeScript</div>
+        <div class="logo">Tailwind CSS</div>
+        <div class="logo">C++</div>
+        <div class="logo">Stripe</div>
+        <div class="logo">Figma</div>
+        <div class="logo">Snowflake</div>
+        <div class="logo">Slack</div>
+        <div class="logo">Tableau</div>
+        <div class="logo">Twilio</div>
+        <div class="logo">HTML</div>
+        <div class="logo">CSS</div>
+        <div class="logo">JavaScript</div>
+        <div class="logo">TypeScript</div>
+        <div class="logo">Tailwind CSS</div>
+        <div class="logo">C++</div>
+        <div class="logo">Stripe</div>
+        <div class="logo">Figma</div>
+        <div class="logo">Snowflake</div>
+        <div class="logo">Slack</div>
+        <div class="logo">Tableau</div>
+        <div class="logo">Twilio</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services" class="section">
+    <div class="container">
+      <div class="section-head reveal">
+        <h2>What we do</h2>
+        <p class="muted">A modular stack for shipping quality software, fast.</p>
+      </div>
+      <div class="grid three">
+        <article class="card tilt reveal">
+          <span class="chip">Product Strategy</span>
+          <h3>Discovery & UX</h3>
+          <p>Research, journeys, wireframes, and rapid prototyping to align teams and reduce risk.</p>
+        </article>
+        <article class="card tilt reveal delay-1">
+          <span class="chip">Engineering</span>
+          <h3>Web & Mobile</h3>
+          <p>TypeScript, React, Next.js, native integrations, and cloud architectures you can trust.</p>
+        </article>
+        <article class="card tilt reveal delay-2">
+          <span class="chip">Intelligence</span>
+          <h3>AI & Automation</h3>
+          <p>LLM features, retrieval, and internal tools to automate workflows and scale impact.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK / TESTIMONIALS -->
+  <section id="work" class="section">
+    <div class="container carousel">
+      <div class="section-head reveal">
+        <h2>Client notes</h2>
+        <p class="muted">Small teams, ambitious outcomes.</p>
+      </div>
+      <div class="snap">
+        <figure class="quote">
+          <p>“Fluxo Labs delivered a polished MVP in eight weeks. The motion design made the product feel premium from
+            day one.”</p>
+          <figcaption class="who"><span class="avatar"></span> Maya, Product Lead</figcaption>
+        </figure>
+        <figure class="quote">
+          <p>“They combine superb engineering with a designer’s eye. We shipped faster with fewer bugs.”</p>
+          <figcaption class="who"><span class="avatar"></span> Lewis, CTO</figcaption>
+        </figure>
+        <figure class="quote">
+          <p>“The team’s AI expertise helped automate our ops and cut costs by 26%.”</p>
+          <figcaption class="who"><span class="avatar"></span> Hana, COO</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="about" class="section">
+    <div class="container">
+      <div class="cta reveal">
+        <h3>Ready to build something people love?</h3>
+        <p class="muted">Tell us about your goals. We’ll propose a lean path to launch with clear milestones.</p>
+        <div><a href="contact.html" class="btn primary">Start a Project</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-grid">
+      <div>
+        <div class="brand"><span class="mark"></span> Fluxo Labs</div>
+        <p class="muted">© 2025 Fluxo Labs. All rights reserved.</p>
+      </div>
+      <div>
+        <strong>Company</strong>
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#services">Services</a>
+      </div>
+      <div>
+        <strong>Contact</strong>
+        <a href="#contact">hello@fluxolabs.dev</a>
+        <a href="#">+971 555 123 456</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth internal anchor scroll
+    document.addEventListener('click', (e) => {
+      const a = e.target.closest('a[href^="#"]');
+      if (!a) return;
+      const id = a.getAttribute('href');
+      if (id && id.length > 1) { const el = document.querySelector(id); if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }
+    });
+
+    // Reveal on scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('in'); io.unobserve(en.target); } });
+    }, { threshold: 0.14 });
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+    // Subtle 3D tilt for .tilt cards and dashboard
+    const tiltables = document.querySelectorAll('.tilt');
+    const damp = 24; // smaller = snappier
+    tiltables.forEach(card => {
+      card.addEventListener('pointermove', (e) => {
+        const b = card.getBoundingClientRect();
+        const x = (e.clientX - b.left) / b.width;   // 0..1
+        const y = (e.clientY - b.top) / b.height;   // 0..1
+        const rx = (0.5 - y) * 12;                  // rotate X
+        const ry = (x - 0.5) * 16;                  // rotate Y
+        card.style.transform = `rotateX(${rx}deg) rotateY(${ry}deg)`;
+      });
+      card.addEventListener('pointerleave', () => { card.style.transform = 'rotateX(0) rotateY(0)'; });
+    });
+  </script>
+</body>
+
+</html>
